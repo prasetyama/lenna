@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +43,11 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }   
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -63,3 +68,4 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 }
+
