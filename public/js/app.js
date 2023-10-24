@@ -5309,9 +5309,9 @@ var app = new Vue({
   created: function created() {
     var _this = this;
     this.fetchMessages();
-    window.Echo["private"]('chat').listen('ChatMessage', function (e) {
+    window.Echo.channel('chat').listen('ChatMessage', function (e) {
       _this.messages.push({
-        message: e.message.message,
+        message: e.message,
         user: e.user
       });
     });

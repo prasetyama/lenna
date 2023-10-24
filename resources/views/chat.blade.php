@@ -7,7 +7,7 @@
             <chat-messages :messages="messages"></chat-messages>
         </div>
         <div class="card-footer">
-            <chat-form v-on:messagesent="addMessage" :user=1></chat-form>
+            <chat-form v-on:messagesent="addMessage" :user={{Session::get('user')}}></chat-form>
         </div>
     </div>
 </div>
