@@ -32,10 +32,11 @@ Vue.component('chat-form', require('./components/ChatForm.vue').default);
 const app = new Vue({
     el: '#app',
     data: {
-        messages: []
+        messages: [],
+        token: ''
     },
     created() {
-        this.fetchMessages();
+        this.loadSession();
         window.Echo.channel('chat').listen('ChatMessage', (e) => {
             this.messages.push({
             message: e.message,
@@ -45,17 +46,39 @@ const app = new Vue({
 
     },
     methods: {
+        loadSession(){
+            axios.get('/session')
+            .then( (response) => {
+                this.token = response.data.token;
+                this.fetchMessages();
+            })
+            .catch(function (error){
+                console.log(error);
+            });
+        },
         fetchMessages() {
-            axios.get('/messages').then(response => {
+            axios.get('/api/messages', {
+                headers: {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json',
+                    'Authorization': 'Bearer ' + this.token
+                }
+            }).then(response => {
                 this.messages = response.data;
             });
         },
         addMessage(message) {
             this.messages.push(message);
-            axios.post('/messages', message).then(response => {
+            axios.post('/api/messages', message, {
+                headers: {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json',
+                    'Authorization': 'Bearer ' + this.token
+                }
+            }).then(response => {
                 console.log(response.data);
             });
-        }
+        },
     }
 });
 

@@ -5304,11 +5304,12 @@ Vue.component('chat-form', (__webpack_require__(/*! ./components/ChatForm.vue */
 var app = new Vue({
   el: '#app',
   data: {
-    messages: []
+    messages: [],
+    token: ''
   },
   created: function created() {
     var _this = this;
-    this.fetchMessages();
+    this.loadSession();
     window.Echo.channel('chat').listen('ChatMessage', function (e) {
       _this.messages.push({
         message: e.message,
@@ -5317,15 +5318,36 @@ var app = new Vue({
     });
   },
   methods: {
-    fetchMessages: function fetchMessages() {
+    loadSession: function loadSession() {
       var _this2 = this;
-      axios.get('/messages').then(function (response) {
-        _this2.messages = response.data;
+      axios.get('/session').then(function (response) {
+        _this2.token = response.data.token;
+        _this2.fetchMessages();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    fetchMessages: function fetchMessages() {
+      var _this3 = this;
+      axios.get('/api/messages', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token
+        }
+      }).then(function (response) {
+        _this3.messages = response.data;
       });
     },
     addMessage: function addMessage(message) {
       this.messages.push(message);
-      axios.post('/messages', message).then(function (response) {
+      axios.post('/api/messages', message, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.token
+        }
+      }).then(function (response) {
         console.log(response.data);
       });
     }

@@ -30,3 +30,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index']);
 Route::get('/messages', [App\Http\Controllers\ChatController::class, 'fetchMessages']);
 Route::post('/messages', [App\Http\Controllers\ChatController::class, 'sendMessage']);
+
+
+Route::get('/session', function () {
+    return [
+        'user' => session()->get('user'),
+        'token' => session()->get('token')
+    ];});
