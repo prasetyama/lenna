@@ -19,9 +19,9 @@ Route::middleware('auth:auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', App\Http\Controllers\Api\RegisterController::class)->name('register');
-Route::post('/login', App\Http\Controllers\Api\LoginController::class)->name('login');
-Route::post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');
+Route::middleware('logger')->post('/register', App\Http\Controllers\Api\RegisterController::class)->name('register');
+Route::middleware('logger')->post('/login', App\Http\Controllers\Api\LoginController::class)->name('login');
+Route::middleware('logger')->post('/logout', App\Http\Controllers\Api\LogoutController::class)->name('logout');
 
-Route::middleware('auth:auth')->get('/messages', [ChatController::class, 'index'])->name('index');
-Route::middleware('auth:auth')->post('/messages', [ChatController::class, 'sendMessage'])->name('sendMessage');
+Route::middleware(['auth:auth', 'logger'])->get('/messages', [ChatController::class, 'index'])->name('index');
+Route::middleware(['auth:auth', 'logger'])->post('/messages', [ChatController::class, 'sendMessage'])->name('sendMessage');
