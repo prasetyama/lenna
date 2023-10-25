@@ -25,6 +25,11 @@ Migrate Database
 php artisan migrate
 ```
 
+Genereta JWT Secret
+```Shell
+php artisan jwt:secret
+```
+
 Build Frontend
 
 ```Shell
@@ -39,3 +44,6 @@ npm run dev
 ```Shell
 php artisan serve
 ```
+
+## API Documentation POSTMAN
+There is postman file in project root
