@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\LogEntry;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 
 class Logger
 {
@@ -20,15 +23,15 @@ class Logger
         return $next($request);
     }
 
-    public function terminate(Request $request, Response $response)
+    public function terminate($request, $response)
     {
         $logEntry = new LogEntry();
 
         $logEntry->url = $request->getUri();
         $logEntry->method = $request->getMethod();
-        $logEntry->body = json_decode($request->getContent(), true);
-        $logEntry->header = $request->getHeader();
-        $logEntry->ip = $request->getIp();
+        $logEntry->body = json_encode($request->getContent(), true);
+        $logEntry->header = json_encode($request->header(), true);
+        $logEntry->ip = $request->ip();
         $logEntry->response_code = $response->getStatusCode();
 
         $logEntry->save();
